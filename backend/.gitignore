@@ -1,0 +1,33 @@
+# Maven build output
+target/
+
+# Runtime-generated uploads
+uploads/
+
+# Logs and local runtime files
+*.log
+logs/
+
+# Local environment and Spring configuration overrides
+.env
+.env.*
+!.env.example
+
+# Local Spring Boot configuration
+src/main/resources/application.properties
+src/main/resources/application-*.properties
+src/main/resources/application-*.yml
+src/main/resources/application-*.yaml
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java tooling files
+*.class
+hs_err_pid*

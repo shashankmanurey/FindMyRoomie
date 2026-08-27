@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/authContextValue";
 
 export default function Navbar() {
   const { user, setUser } = useContext(AuthContext);
@@ -14,14 +14,17 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <h2>FindMyRoomie</h2>
-      <div>
-        <Link to="/">Home</Link>
-        {user && <Link to="/chat">Chat</Link>}
-        {user && <Link to="/profile">Profile</Link>}
-        {!user && <Link to="/login">Login</Link>}
-        {!user && <Link to="/register">Register</Link>}
-        {user && <button onClick={handleLogout}>Logout</button>}
+      <Link className="brand" to="/">
+        <span className="brand-mark">F</span>
+        <span>FindMyRoomie</span>
+      </Link>
+      <div className="nav-links">
+        <Link to="/">Discover</Link>
+        {user && <Link to="/chat">Messages</Link>}
+        {user && <Link to="/profile">My profile</Link>}
+        {!user && <Link className="nav-quiet" to="/login">Log in</Link>}
+        {!user && <Link className="nav-cta" to="/register">Get started</Link>}
+        {user && <button className="nav-quiet" onClick={handleLogout}>Log out</button>}
       </div>
     </nav>
   );

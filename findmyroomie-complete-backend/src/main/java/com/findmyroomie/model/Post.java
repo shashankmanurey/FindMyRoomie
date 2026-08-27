@@ -2,6 +2,8 @@ package com.findmyroomie.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -17,7 +19,10 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private String imageUrl;
+    @ElementCollection
+    @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "image_url", nullable = false)
+    private List<String> imageUrls = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -28,8 +33,8 @@ public class Post {
     public void setAuthor(User author) { this.author = author; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public List<String> getImageUrls() { return imageUrls; }
+    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

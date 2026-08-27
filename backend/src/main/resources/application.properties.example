@@ -15,7 +15,7 @@ jwt.expirationMillis=900000
 jwt.refreshExpirationMillis=604800000
 
 # CORS
-app.cors.allowed-origins=http://localhost:3000
+app.cors.allowed-origins=http://localhost:5173
 
 # Room photos are stored outside the database and served by the application.
 spring.servlet.multipart.max-file-size=10MB

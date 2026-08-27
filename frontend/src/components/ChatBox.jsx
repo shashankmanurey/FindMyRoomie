@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import { connectWebSocket } from "../api/chat";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/authContextValue";
 
-export default function ChatBox({ userId }) {
+export default function ChatBox({ userId, recipient }) {
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
-  const [recipientId, setRecipientId] = useState(""); // optional: target user ID
   const clientRef = useRef(null);
 
   // connect WebSocket and handle incoming messages
@@ -34,13 +33,13 @@ export default function ChatBox({ userId }) {
 
     if (!text.trim()) return;
     if (!clientRef.current || !clientRef.current.connected) {
-      alert("Chat not connected yet.");
+      alert("Chat is still connecting. Please try again in a moment.");
       return;
     }
 
     const payload = {
       senderId: userId,
-      recipientId: recipientId || null,
+      recipientId: recipient?.id || null,
       content: text.trim(),
       senderName: user?.name || user?.email || "Unknown",
     };
@@ -52,41 +51,28 @@ export default function ChatBox({ userId }) {
 
   return (
     <div className="chat-box">
-      <div
-        style={{
-          maxHeight: 300,
-          overflowY: "auto",
-          border: "1px solid #ddd",
-          padding: 8,
-          marginBottom: 8,
-          background: "#fff",
-          borderRadius: 6,
-        }}
-      >
-        {messages.length === 0 && <p>No messages yet</p>}
+      <div className="chat-header">
+        <div><span className="section-kicker">Private messages</span><h2>{recipient ? `Chat with ${recipient.name || recipient.email}` : "Choose a roomie"}</h2></div>
+        <span className="status-dot">Live</span>
+      </div>
+      <div className="messages">
+        {messages.length === 0 && <p className="empty-state">{recipient ? "Your conversation starts here." : "Pick someone from the list to start chatting."}</p>}
         {messages.map((m, i) => (
-          <div key={i}>
-            <strong>{m.senderName || m.senderId}:</strong> {m.content}
+          <div className={`message ${m.senderId === userId ? "message-own" : ""}`} key={i}>
+            <span>{m.content}</span>
           </div>
         ))}
       </div>
 
-      <form onSubmit={send} style={{ display: "flex", gap: 8 }}>
+      <form className="message-form" onSubmit={send}>
         <input
           type="text"
-          placeholder="Recipient ID (optional)"
-          value={recipientId}
-          onChange={(e) => setRecipientId(e.target.value)}
-          style={{ width: 130 }}
-        />
-        <input
-          type="text"
-          placeholder="Type a message..."
+          placeholder={recipient ? "Write a message..." : "Select a roomie first"}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          style={{ flex: 1 }}
+          disabled={!recipient}
         />
-        <button type="submit">Send</button>
+        <button className="button button-primary" type="submit" disabled={!recipient}>Send</button>
       </form>
     </div>
   );

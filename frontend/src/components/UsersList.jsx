@@ -16,28 +16,22 @@ export default function UsersList({ onSelect, selectedId }) {
   }, []);
 
   return (
-    <div style={{ width: 220, borderRight: '1px solid #ddd', padding: '0.5rem' }}>
-      <h4>Users</h4>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+    <div className="users-list">
+      <div className="section-kicker">Your people</div>
+      <h3>Start a conversation</h3>
+      <ul>
         {users.map(u => (
           <li key={u.id} style={{ marginBottom: 8 }}>
             <button
               onClick={() => onSelect(u)}
-              style={{
-                width: '100%',
-                textAlign: 'left',
-                padding: '8px',
-                background: u.id === selectedId ? '#eee' : '#fff',
-                border: '1px solid #ccc',
-                borderRadius: 4,
-                cursor: 'pointer'
-              }}
+              className={`user-button ${u.id === selectedId ? 'is-selected' : ''}`}
             >
-              {u.name || u.email}
+              <span className="avatar avatar-small">{(u.name || u.email || 'U').charAt(0).toUpperCase()}</span>
+              <span>{u.name || u.email}</span>
             </button>
           </li>
         ))}
-        {!users.length && <li style={{ color: '#777' }}>No users available</li>}
+        {!users.length && <li className="empty-state compact">No users available yet.</li>}
       </ul>
     </div>
   );

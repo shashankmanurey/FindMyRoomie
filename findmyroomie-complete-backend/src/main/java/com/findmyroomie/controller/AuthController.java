@@ -34,10 +34,14 @@ public class AuthController {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already in use"));
         }
-        User user = authService.register(email, password, name);
+        Integer budget = body.get("budget") == null || body.get("budget").isBlank()
+            ? null : Integer.valueOf(body.get("budget"));
+        User user = authService.register(email, password, name, body.get("smoking"), body.get("drinking"),
+            body.get("sleepSchedule"), body.get("occupation"), body.get("location"), budget,
+            body.get("moveInDate"), body.get("bio"));
         String access = jwtUtil.generateToken(user.getEmail());
         String refresh = authService.createRefreshToken(user);
-        return ResponseEntity.ok(Map.of("accessToken", access, "refreshToken", refresh, "user", Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName())));
+        return ResponseEntity.ok(Map.of("accessToken", access, "refreshToken", refresh, "user", userResponse(user)));
     }
 
     @PostMapping("/login")
@@ -48,7 +52,21 @@ public class AuthController {
         User user = userRepository.findByEmail(email).orElseThrow();
         String access = jwtUtil.generateToken(user.getEmail());
         String refresh = authService.createRefreshToken(user);
-        return ResponseEntity.ok(Map.of("accessToken", access, "refreshToken", refresh, "user", Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName())));
+        return ResponseEntity.ok(Map.of("accessToken", access, "refreshToken", refresh, "user", userResponse(user)));
+    }
+
+    private Map<String, Object> userResponse(User user) {
+        return Map.ofEntries(
+                Map.entry("id", user.getId()), Map.entry("email", user.getEmail()), Map.entry("name", user.getName()),
+                Map.entry("bio", user.getBio() == null ? "" : user.getBio()),
+                Map.entry("smoking", user.getSmoking() == null ? "" : user.getSmoking()),
+                Map.entry("drinking", user.getDrinking() == null ? "" : user.getDrinking()),
+                Map.entry("sleepSchedule", user.getSleepSchedule() == null ? "" : user.getSleepSchedule()),
+                Map.entry("occupation", user.getOccupation() == null ? "" : user.getOccupation()),
+                Map.entry("location", user.getLocation() == null ? "" : user.getLocation()),
+                Map.entry("budget", user.getBudget() == null ? 0 : user.getBudget()),
+                Map.entry("moveInDate", user.getMoveInDate() == null ? "" : user.getMoveInDate())
+        );
     }
 
     @PostMapping("/refresh")

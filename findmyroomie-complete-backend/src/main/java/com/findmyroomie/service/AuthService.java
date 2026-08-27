@@ -37,11 +37,21 @@ public class AuthService {
         this.refreshExpirationMillis = refreshExpirationMillis;
     }
 
-    public User register(String email, String password, String name) {
+    public User register(String email, String password, String name, String smoking, String drinking,
+                         String sleepSchedule, String occupation, String location, Integer budget,
+                         String moveInDate, String bio) {
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setName(name);
+        user.setSmoking(smoking);
+        user.setDrinking(drinking);
+        user.setSleepSchedule(sleepSchedule);
+        user.setOccupation(occupation);
+        user.setLocation(location);
+        user.setBudget(budget);
+        user.setMoveInDate(moveInDate);
+        user.setBio(bio);
         return userRepository.save(user);
     }
 
